@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}О нас{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-6 text-gray-800 text-center">О нашем отеле</h1>
+        
+        <div class="mb-8">
+            <img class="w-full h-80 object-cover rounded-lg shadow-md" src="https://picsum.photos/seed/hotel_lobby/1000/400" alt="Лобби отеля">
+        </div>
+
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Наша миссия</h2>
+        <p class="text-gray-600 mb-6 text-lg">
+            Мы стремимся предоставить нашим гостям незабываемый опыт проживания в самом сердце Казахстана. Наша миссия — сочетать традиционное казахское гостеприимство с современным комфортом и безупречным сервисом. Мы заботимся о каждой детали, чтобы ваше пребывание было максимально приятным и беззаботным.
+        </p>
+
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Наши преимущества</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-600 text-lg ml-4 mb-8">
+            <li><span class="font-medium text-gray-800">Идеальное расположение:</span> В шаговой доступности от главных достопримечательностей.</li>
+            <li><span class="font-medium text-gray-800">Уютные номера:</span> От стандартных до роскошных люксов.</li>
+            <li><span class="font-medium text-gray-800">Превосходный сервис:</span> Круглосуточная поддержка и консьерж-сервис.</li>
+            <li><span class="font-medium text-gray-800">Местная кухня:</span> Ресторан с лучшими блюдами казахской и европейской кухни.</li>
+        </ul>
+
+        <div class="text-center mt-8">
+            <a href="{% url 'room_list' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-hotel-primary hover:bg-blue-700">
+                Забронировать номер
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

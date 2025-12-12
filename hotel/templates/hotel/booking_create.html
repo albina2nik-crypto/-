@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Бронирование номера {{ room.number }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <div class="max-w-xl mx-auto bg-white p-8 border border-gray-200 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Бронирование номера {{ room.number }}</h1>
+        <p class="text-center text-lg text-gray-600 mb-6">{{ room.get_room_type_display }} - {{ room.price_per_night|floatformat:0 }} KZT за ночь</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            
+            <div class="mt-6">
+                <button type="submit" class="w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Продолжить
+                </button>
+            </div>
+        </form>
+        
+        <p class="mt-4 text-center text-sm text-gray-600">
+            <a href="{% url 'room_detail' pk=room.pk %}" class="font-medium text-hotel-primary hover:text-blue-700">Отменить и вернуться к номеру</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

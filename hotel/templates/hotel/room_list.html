@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Номера и бронирование{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-4xl font-bold mb-6 text-gray-800">Наши номера</h1>
+
+    <!-- Search and Filter Form -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-700">Поиск свободных номеров</h2>
+        <form method="get" action="{% url 'room_list' %}" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+            {% csrf_token %}
+            
+            <div class="col-span-1">
+                <label for="check_in" class="block text-sm font-medium text-gray-700">Дата заезда</label>
+                <input type="date" name="check_in" id="check_in" value="{{ check_in|default:today }}" min="{{ today }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            
+            <div class="col-span-1">
+                <label for="check_out" class="block text-sm font-medium text-gray-700">Дата выезда</label>
+                <input type="date" name="check_out" id="check_out" value="{{ check_out|default:tomorrow }}" min="{{ tomorrow }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            
+            <div class="col-span-1">
+                <label for="room_type" class="block text-sm font-medium text-gray-700">Тип номера</label>
+                <select name="room_type" id="room_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option value="all">Все типы</option>
+                    {% for key, value in room_types %}
+                        <option value="{{ key }}" {% if room_type == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-span-1">
+                <label for="max_guests" class="block text-sm font-medium text-gray-700">Гостей (мин.)</label>
+                <input type="number" name="max_guests" id="max_guests" value="{{ max_guests|default:1 }}" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            </div>
+            
+            <div class="col-span-1">
+                <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-hotel-primary hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Найти
+                </button>
+            </div>
+        </form>
+        {% if is_filtered %}
+            <div class="mt-4 text-sm text-gray-500">
+                Показаны номера, свободные с {{ check_in }} по {{ check_out }}. <a href="{% url 'room_list' %}" class="text-red-500 hover:text-red-700">Сбросить фильтр</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Room List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% if rooms %}
+            {% for room in rooms %}
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+                    <img class="h-48 w-full object-cover" src="https://picsum.photos/seed/room_{{ room.number }}/400/300" alt="Фото номера {{ room.number }}">
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Номер {{ room.number }}</h2>
+                        <p class="text-sm font-medium text-hotel-primary mb-4">{{ room.get_room_type_display }}</p>
+                        
+                        <p class="text-gray-600 mb-4 line-clamp-3">{{ room.description|truncatechars:100 }}</p>
+                        
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xl font-bold text-gray-900">{{ room.price_per_night|floatformat:0 }} KZT</span>
+                            <span class="text-sm text-gray-500">за ночь</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <a href="{% url 'room_detail' pk=room.pk %}" class="text-hotel-primary hover:text-blue-700 font-medium">Подробнее</a>
+                            <a href="{% url 'booking_create' room_id=room.pk %}{% if check_in and check_out %}?check_in={{ check_in }}&check_out={{ check_out }}{% endif %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                                Забронировать
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-span-full bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+                <p class="font-bold">Ничего не найдено</p>
+                <p>К сожалению, по вашему запросу свободных номеров нет. Попробуйте изменить даты или фильтры.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
